@@ -1,5 +1,8 @@
 package com.example.agenda
 
+
+//import androidx.compose.material.icons
+import android.R.attr.checked
 import android.R.attr.text
 import android.os.Bundle
 import android.widget.ImageButton
@@ -27,6 +30,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -43,6 +47,8 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,6 +62,7 @@ import org.intellij.lang.annotations.JdkConstants
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
 
 data class Compromisso(
     val titulo: String,
@@ -109,6 +116,10 @@ class MainActivity : ComponentActivity() {
                             TelaRemoverItem(navController,
                                 listaAtividades,
                                 listaCompromissos)
+                        }
+
+                        composable("telaArquivos"){
+                            TelaArquivos(navController)
                         }
                     }
             }
@@ -275,6 +286,14 @@ fun TelaPrincipal(navController : NavController,
             Spacer(modifier = Modifier.width(8.dp))
             Text(text = "Remover Item",
                 modifier = Modifier.align(Alignment.CenterHorizontally))
+            Spacer(modifier = Modifier.width(15.dp))
+            Button(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onClick = { navController.navigate("telaArquivos") }
+            ){
+                Text("Tela Arquivos")
+            }
+
     }
 }
 
@@ -604,4 +623,94 @@ fun TelaRemoverItem(navController: NavController,
         }
 
     }
+
+}
+
+@Composable
+fun TelaArquivos(navController: NavController){
+
+    var progresso = 0.6f
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(30.dp))
+        Text(text = "Tela Upload de Arquivo e Estados Depedentes",
+            fontSize = 24.sp,
+            textAlign = TextAlign.Center)
+        Spacer(modifier = Modifier.height(30.dp))
+        Image(
+            painterResource(R.drawable.arquivo),
+            contentDescription = "IconeArquivo",
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.height(30.dp))
+        LinearProgressIndicator(
+            progress = { progresso },
+            modifier = Modifier.fillMaxWidth()
+                .padding(20.dp)
+        )
+        Text(
+            text = "Upload do Arquivo ${(progresso * 100).toInt()}%",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(30.dp))
+        var termo by remember { mutableStateOf(false) }
+        Row{
+            Checkbox(
+                checked = termo,
+                onCheckedChange = {
+                    termo = it
+                }
+            )
+            Text("Aceito os Termos de licença e envio")
+        }
+        Spacer(modifier = Modifier.height(30.dp))
+        var mensagem by remember {mutableStateOf("")}
+
+         Text(text ="Status: $mensagem")
+
+        Spacer(modifier = Modifier.height(150.dp))
+        val permitido = termo
+        Button(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            enabled = permitido,
+            onClick = { mensagem = "Upload Iniciado" }
+        ){
+            Text("Iniciar Upload")
+        }
+        Spacer(modifier = Modifier.height(30.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
+            Button(
+                onClick = {
+                    navController.popBackStack()
+                }
+            ) {
+
+                Text("Voltar")
+
+            }
+            Spacer(modifier = Modifier.padding(100.dp))
+            Image( painter = painterResource(id = R.drawable.cancelar),
+                contentDescription = "Remover Item",
+                modifier = Modifier
+                    .size(55.dp)
+                    .clickable{
+                       mensagem = "Upload Cancelado"
+                    }
+            )
+
+
+        }
+
+    }
+
 }
