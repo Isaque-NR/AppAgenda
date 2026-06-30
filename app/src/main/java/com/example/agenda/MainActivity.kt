@@ -1,14 +1,12 @@
 package com.example.agenda
 
-import android.R.attr.text
 import android.os.Bundle
-import android.widget.ImageButton
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,7 +25,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -44,7 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -52,11 +47,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.agenda.ui.theme.AgendaTheme
-import org.intellij.lang.annotations.JdkConstants
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.MaterialTheme
+import com.example.agenda.ui.theme.VerdeAgenda
+import com.example.agenda.ui.theme.AzulAgenda
+import com.example.agenda.ui.theme.AmareloAgenda
+import com.example.agenda.ui.theme.VermelhoAgenda
+import com.example.agenda.ui.theme.BrancoAgenda
+import com.example.agenda.ui.theme.Purple40
+import com.example.agenda.ui.theme.TextoEscuroAgenda
+import com.example.agenda.ui.theme.VermelhoClaroAgenda
 
 data class Compromisso(
     val titulo: String,
@@ -132,6 +137,7 @@ fun TelaPrincipal(navController : NavController,
     Column (
         modifier = Modifier.fillMaxSize()
             .navigationBarsPadding()
+            .background(MaterialTheme.colorScheme.background)
     ){
         Spacer(modifier = Modifier.height(50.dp))
 
@@ -139,25 +145,28 @@ fun TelaPrincipal(navController : NavController,
             text = "App Agenda",
             modifier = Modifier.fillMaxWidth(),
             fontSize = 32.sp,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            //color = AmareloAgenda
         )
         Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = "Progresso do Dia",
             fontSize = 16.sp,
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         LinearProgressIndicator(
             progress = { progresso },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(20.dp),
+            color = VerdeAgenda,
+            trackColor = VermelhoClaroAgenda
         )
         Text(
             text = "${(progresso * 100).toInt()}%",
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(30.dp))
 
@@ -174,13 +183,15 @@ fun TelaPrincipal(navController : NavController,
                     .padding(end = 8.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.calen),
+                    painter = painterResource(id = R.drawable.cazul),
                     contentDescription = "Compromissos",
                     modifier = Modifier.size(64.dp)
                 )
                 Text(
                     text = "Compromissos:",
-                    fontSize = 24.sp
+                    fontSize = 24.sp,
+                    color = AzulAgenda
+
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 LazyColumn(
@@ -208,13 +219,14 @@ fun TelaPrincipal(navController : NavController,
                     .padding(start = 8.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.todo),
+                    painter = painterResource(id = R.drawable.tamarelo),
                     contentDescription = "A Fazer",
                     modifier = Modifier.size(70.dp)
                 )
                 Text(
                     text = "A Fazer:",
-                    fontSize = 24.sp
+                    fontSize = 24.sp,
+                    color = AmareloAgenda
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 LazyColumn(
@@ -237,7 +249,11 @@ fun TelaPrincipal(navController : NavController,
                                         atividade.copy(              // substituindo o objeto inteiro pq o compose nao percebe mudanças em propriedades internas do objeto
                                             feito = marcado
                                         )
-                                }
+                                },
+                                    colors = CheckboxDefaults.colors(
+                                     checkedColor = VerdeAgenda,
+                                     uncheckedColor = VermelhoAgenda
+                                )
                             )
                         }
                     }
@@ -257,7 +273,13 @@ fun TelaPrincipal(navController : NavController,
             Button(
                 onClick = {
                     navController.navigate("novoCompromisso")
-                }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AzulAgenda,
+                    contentColor = BrancoAgenda,
+                    disabledContainerColor = Purple40,
+                    disabledContentColor = TextoEscuroAgenda
+                )
             ) {
                 Text("Adicionar Compromisso")
             }
@@ -265,7 +287,12 @@ fun TelaPrincipal(navController : NavController,
             Button(
                 onClick = {
                     navController.navigate("novaAtividade")
-                }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AmareloAgenda,
+                    contentColor = TextoEscuroAgenda,
+                    disabledContentColor = TextoEscuroAgenda
+                )
             ) {
                 Text("Adicionar Atividade")
             }
@@ -273,7 +300,7 @@ fun TelaPrincipal(navController : NavController,
 
         Spacer(modifier = Modifier.height(4.dp))
 
-        Image( painter = painterResource(id = R.drawable.lixo),
+        Image( painter = painterResource(id = R.drawable.vermlixo),
             contentDescription = "Remover Item",
             modifier = Modifier.align(Alignment.CenterHorizontally)
                 .size(45.dp)
@@ -422,7 +449,11 @@ fun TelaNovoCompromisso(
 
                 listaCompromissos.add(novoCompromisso)
                 navController.popBackStack()
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = VerdeAgenda,
+                contentColor = BrancoAgenda
+            )
         ) {
 
             Text("Criar  Compromisso")
@@ -432,7 +463,11 @@ fun TelaNovoCompromisso(
         Button(
             onClick = {
                 navController.popBackStack()
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = VermelhoAgenda,
+                contentColor = BrancoAgenda
+            )
         ) {
 
             Text("Voltar")
@@ -489,7 +524,11 @@ fun TelaNovaAtividade(
 
                 listaAtividades.add(novaAtividade)
                 navController.popBackStack()
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = VerdeAgenda,
+                contentColor = BrancoAgenda
+            )
         ) {
 
             Text("Criar Atividade")
@@ -499,7 +538,11 @@ fun TelaNovaAtividade(
         Button(
             onClick = {
                 navController.popBackStack()
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = VermelhoAgenda,
+                contentColor = BrancoAgenda
+            )
         ) {
 
             Text("Voltar")
@@ -597,7 +640,11 @@ fun TelaRemoverItem(navController: NavController,
                 )
 
                 navController.popBackStack()
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = AmareloAgenda,
+                contentColor = BrancoAgenda
+            )
         ) {
             Text("Remover Selecionados")
         }
@@ -605,7 +652,11 @@ fun TelaRemoverItem(navController: NavController,
         Button(
             onClick = {
                 navController.popBackStack()
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = VermelhoAgenda,
+                contentColor = BrancoAgenda
+            )
         ) {
 
             Text("Voltar")
