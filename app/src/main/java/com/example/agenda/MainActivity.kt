@@ -57,6 +57,7 @@ import androidx.compose.material3.MaterialTheme
 import com.example.agenda.ui.theme.VerdeAgenda
 import com.example.agenda.ui.theme.AzulAgenda
 import com.example.agenda.ui.theme.AmareloAgenda
+import com.example.agenda.ui.theme.BancoAgendaHelper
 import com.example.agenda.ui.theme.VermelhoAgenda
 import com.example.agenda.ui.theme.BrancoAgenda
 import com.example.agenda.ui.theme.Purple40
@@ -64,6 +65,7 @@ import com.example.agenda.ui.theme.TextoEscuroAgenda
 import com.example.agenda.ui.theme.VermelhoClaroAgenda
 
 data class Compromisso(
+    val id: Int =0,
     val titulo: String,
     val descricao: String,
     val data: String,
@@ -71,6 +73,7 @@ data class Compromisso(
 )
 
 data class Atividade(
+    val id: Int =0,
     val titulo: String,
     var feito: Boolean
 )
@@ -80,13 +83,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val banco = BancoAgendaHelper(this)
+
         setContent {
             val navController = rememberNavController()
             val listaCompromissos = remember {
-                mutableStateListOf<Compromisso>()
+                mutableStateListOf<Compromisso>().apply {
+                    addAll(banco.listarCompromissos())
+                }
             }
             val listaAtividades= remember {
-                mutableStateListOf<Atividade>()
+                mutableStateListOf<Atividade>().apply {
+                    addAll(banco.listarAtividades())
+                }
             }
 
 
@@ -98,23 +108,27 @@ class MainActivity : ComponentActivity() {
                         composable("principal") {
                             TelaPrincipal(navController,
                                 listaCompromissos,
-                                listaAtividades)
+                                listaAtividades,
+                                banco)
                         }
 
                         composable("novoCompromisso") {
                             TelaNovoCompromisso(navController,
-                                listaCompromissos,)
+                                listaCompromissos,
+                                banco)
                         }
 
                         composable("novaAtividade") {
                             TelaNovaAtividade(navController,
-                                listaAtividades)
+                                listaAtividades,
+                                banco)
                         }
 
                         composable("removerItem") {
                             TelaRemoverItem(navController,
                                 listaAtividades,
-                                listaCompromissos)
+                                listaCompromissos,
+                                banco)
                         }
                     }
             }
@@ -125,7 +139,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TelaPrincipal(navController : NavController,
                   listaCompromissos: SnapshotStateList<Compromisso>,
-                  listaAtividades: SnapshotStateList<Atividade>
+                  listaAtividades: SnapshotStateList<Atividade>,
+                  banco: BancoAgendaHelper
 ) {
     val progresso = if (listaAtividades.isNotEmpty()) {
         listaAtividades.count { it.feito }.toFloat() /
@@ -190,7 +205,6 @@ fun TelaPrincipal(navController : NavController,
                 Text(
                     text = "Compromissos:",
                     fontSize = 24.sp,
-                    color = AzulAgenda
 
                 )
                 Spacer(modifier = Modifier.height(15.dp))
@@ -219,14 +233,13 @@ fun TelaPrincipal(navController : NavController,
                     .padding(start = 8.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.tamarelo),
+                    painter = painterResource(id = R.drawable.tverde),
                     contentDescription = "A Fazer",
                     modifier = Modifier.size(70.dp)
                 )
                 Text(
                     text = "A Fazer:",
                     fontSize = 24.sp,
-                    color = AmareloAgenda
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 LazyColumn(
@@ -245,10 +258,13 @@ fun TelaPrincipal(navController : NavController,
                                 checked = atividade.feito,
                                 onCheckedChange = { marcado ->
 
-                                    listaAtividades[indice] =
-                                        atividade.copy(              // substituindo o objeto inteiro pq o compose nao percebe mudanças em propriedades internas do objeto
-                                            feito = marcado
-                                        )
+                                    val atividadeAtualizada = atividade.copy(
+                                        feito = marcado
+                                    )
+
+                                    banco.atualizarAtividade(atividadeAtualizada)
+
+                                    listaAtividades[indice] = atividadeAtualizada
                                 },
                                     colors = CheckboxDefaults.colors(
                                      checkedColor = VerdeAgenda,
@@ -317,7 +333,8 @@ fun TelaPrincipal(navController : NavController,
 @Composable
 fun TelaNovoCompromisso(
     navController: NavController,
-    listaCompromissos: SnapshotStateList<Compromisso>
+    listaCompromissos: SnapshotStateList<Compromisso>,
+    banco: BancoAgendaHelper
 ) {
     var titulo by remember {
         mutableStateOf("")
@@ -441,14 +458,21 @@ fun TelaNovoCompromisso(
             onClick = {
                 val novoCompromisso =
                     Compromisso(
-                        titulo,
-                        descricao,
-                        data,
-                        hora
+                        titulo = titulo,
+                        descricao = descricao,
+                        data = data,
+                        hora = hora
                     )
+                val idGerado = banco.inserirCompromisso(novoCompromisso)
 
-                listaCompromissos.add(novoCompromisso)
-                navController.popBackStack()
+                if (idGerado != -1L) {
+                    listaCompromissos.add(
+                        novoCompromisso.copy(
+                            id = idGerado.toInt()
+                        )
+                    )
+                    navController.popBackStack()
+                }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = VerdeAgenda,
@@ -480,7 +504,9 @@ fun TelaNovoCompromisso(
 @Composable
 fun TelaNovaAtividade(
     navController: NavController,
-    listaAtividades: SnapshotStateList<Atividade>
+    listaAtividades: SnapshotStateList<Atividade>,
+    banco: BancoAgendaHelper
+
 ) {
     var titulo by remember {
         mutableStateOf("")
@@ -518,12 +544,21 @@ fun TelaNovaAtividade(
             onClick = {
                 val novaAtividade =
                     Atividade(
-                        titulo,
-                        false,
+                        titulo = titulo,
+                        feito = false,
                     )
 
-                listaAtividades.add(novaAtividade)
-                navController.popBackStack()
+                val idGerado = banco.inserirAtividade(novaAtividade)
+
+                if (idGerado != -1L) {
+                    listaAtividades.add(
+                        novaAtividade.copy(
+                            id = idGerado.toInt()
+                        )
+                    )
+
+                    navController.popBackStack()
+                }
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = VerdeAgenda,
@@ -556,7 +591,8 @@ fun TelaNovaAtividade(
 @Composable
 fun TelaRemoverItem(navController: NavController,
                     listaAtividades: SnapshotStateList<Atividade>,
-                    listaCompromissos: SnapshotStateList<Compromisso>
+                    listaCompromissos: SnapshotStateList<Compromisso>,
+                    banco: BancoAgendaHelper
 ) {
     val compromissosSelecionados =
         remember {
@@ -631,13 +667,16 @@ fun TelaRemoverItem(navController: NavController,
         Button(
             onClick = {
 
-                listaCompromissos.removeAll(
-                    compromissosSelecionados
-                )
+                compromissosSelecionados.forEach { compromisso ->
+                    banco.removerCompromisso(compromisso.id)
+                }
 
-                listaAtividades.removeAll(
-                    atividadesSelecionadas
-                )
+                atividadesSelecionadas.forEach { atividade ->
+                    banco.removerAtividade(atividade.id)
+                }
+
+                listaCompromissos.removeAll(compromissosSelecionados)
+                listaAtividades.removeAll(atividadesSelecionadas)
 
                 navController.popBackStack()
             },
