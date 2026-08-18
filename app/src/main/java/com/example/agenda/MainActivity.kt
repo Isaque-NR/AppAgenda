@@ -50,6 +50,7 @@ import com.example.agenda.ui.theme.AgendaTheme
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CheckboxDefaults
@@ -156,16 +157,28 @@ fun TelaPrincipal(navController : NavController,
     ){
         Spacer(modifier = Modifier.height(50.dp))
 
-        Text(
-            text = "App Agenda",
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            fontSize = 32.sp,
-            textAlign = TextAlign.Center,
-            //color = AmareloAgenda
-        )
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.iconagenda),
+                contentDescription = "Ícone do Agenda",
+                modifier = Modifier.size(45.dp)
+            )
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Text(
+                text = "App Agenda",
+                fontSize = 32.sp,
+                textAlign = TextAlign.Center
+            )
+        }
         Spacer(modifier = Modifier.height(30.dp))
         Text(
-            text = "Progresso do Dia",
+            text = "Progresso das Atividades",
             fontSize = 16.sp,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
@@ -427,6 +440,8 @@ fun TelaNovoCompromisso(
                                         "dd/MM/yyyy",
                                         Locale.getDefault()
                                     )
+
+                                formatter.timeZone = TimeZone.getTimeZone("UTC")
 
                                 data = formatter.format(Date(millis))
                             }
