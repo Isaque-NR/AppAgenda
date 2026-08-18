@@ -27,7 +27,9 @@ O aplicativo permite cadastrar compromissos, criar atividades, marcar tarefas co
 
 ### Tela Principal
 
-![Tela Principal](Imagens/telaPrincipal.png)
+<p align="center">
+  <img src="Imagens/telaInicial.png" width="300">
+</p>
 
 Exibe os compromissos, atividades e o progresso das tarefas concluídas.
 
@@ -37,7 +39,10 @@ A interface utiliza componentes do Jetpack Compose, como Column, Row, Text, Butt
 
 ### Novo Compromisso
 
-![Novo Compromisso](Imagens/telaCompromisso.png)
+<p align="center">
+  <img src="Imagens/telaCompromisso.png" width="300">
+</p>
+
 
 Permite cadastrar título, descrição, horário e data.
 
@@ -49,7 +54,10 @@ Após a criação, o compromisso é salvo no banco SQLite e adicionado à lista 
 
 ### Nova Atividade
 
-![Nova Atividade](Imagens/telaAtividade.png)
+<p align="center">
+  <img src="Imagens/telaAtividade.png" width="300">
+</p>
+
 
 Permite criar uma nova atividade que inicialmente fica como não concluída.
 
@@ -57,7 +65,10 @@ Depois de criada, ela é salva no SQLite e adicionada à lista de atividades exi
 
 ### Remover Itens
 
-![Remover Itens](Imagens/telaRemocao.png)
+<p align="center">
+  <img src="Imagens/telaRemocao.png" width="300">
+</p>
+
 
 A tela de remoção permite selecionar uma ou várias atividades e compromissos utilizando Checkbox.
 
