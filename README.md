@@ -4,9 +4,11 @@
   <img src="Imagens/iconAgenda.png" alt="Ícone do App Agenda" width="200">
 </p>
 
-Aplicativo Android desenvolvido em **Kotlin** e **Jetpack Compose** para organização de compromissos e atividades.
+## Objetivo
 
-O aplicativo permite cadastrar compromissos, criar atividades, marcar tarefas como concluídas, acompanhar o progresso do dia e remover itens. Os dados são armazenados localmente utilizando **SQLite**.
+Projeto desenvolvido para praticar **desenvolvimento Android com Kotlin** na matéria Programação para Dispositivos Móveis, integrando interface com Jetpack Compose, navegação, gerenciamento de estado e persistência de dados.
+
+Aplicativo Android desenvolvido em **Kotlin** e **Jetpack Compose** para organização de compromissos e atividades, onde permite cadastrar compromissos, criar atividades, marcar tarefas como concluídas, acompanhar o progresso e remover itens. Os dados são armazenados localmente utilizando **SQLite**.
 
 ---
 
@@ -28,7 +30,7 @@ O aplicativo permite cadastrar compromissos, criar atividades, marcar tarefas co
 ### Tela Principal
 
 <p align="center">
-  <img src="Imagens/telaInicial.png" width="300">
+  <img src="Imagens/telaPrincipal.png" width="250">
 </p>
 
 Exibe os compromissos, atividades e o progresso das tarefas concluídas.
@@ -40,7 +42,7 @@ A interface utiliza componentes do Jetpack Compose, como Column, Row, Text, Butt
 ### Novo Compromisso
 
 <p align="center">
-  <img src="Imagens/telaCompromisso.png" width="300">
+  <img src="Imagens/telaCompromisso.png" width="250">
 </p>
 
 
@@ -55,7 +57,7 @@ Após a criação, o compromisso é salvo no banco SQLite e adicionado à lista 
 ### Nova Atividade
 
 <p align="center">
-  <img src="Imagens/telaAtividade.png" width="300">
+  <img src="Imagens/telaAtividade.png" width="250">
 </p>
 
 
@@ -66,7 +68,7 @@ Depois de criada, ela é salva no SQLite e adicionada à lista de atividades exi
 ### Remover Itens
 
 <p align="center">
-  <img src="Imagens/telaRemocao.png" width="300">
+  <img src="Imagens/telaRemocao.png" width="250">
 </p>
 
 
@@ -82,7 +84,7 @@ A remoção acontece tanto no banco de dados quanto nas listas utilizadas pela i
 | Tecnologia             | Utilização                  |
 | ---------------------- | --------------------------- |
 | **Kotlin**             | Linguagem principal         |
-| **Android**            | Plataforma do aplicativo=    |
+| **Android**            | Plataforma do aplicativo    |
 | **Jetpack Compose**    | Construção da interface     |
 | **Material 3**         | Componentes e estilização   |
 | **Navigation Compose** | Navegação entre telas       |
@@ -121,8 +123,3 @@ git clone https://github.com/Isaque-NR/AppAgenda
 3. Aguarde a sincronização das dependências.
 4. Execute em um emulador Android ou dispositivo físico.
 5. Clique em **Run**.
----
-
-## Objetivo
-
-Projeto desenvolvido para praticar **desenvolvimento Android com Kotlin** na matéria Programação para Dispositivos Móveis, integrando interface com Jetpack Compose, navegação, gerenciamento de estado e persistência de dados.
